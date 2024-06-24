@@ -36,6 +36,8 @@ import com.liulishuo.filedownloader.util.FileDownloadUtils;
 
 import java.lang.ref.WeakReference;
 
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+
 /**
  * The service is running for FileDownloader.
  * <p/>
@@ -101,7 +103,11 @@ public class FileDownloadService extends Service {
                 if (notificationManager == null) return;
                 notificationManager.createNotificationChannel(notificationChannel);
             }
-            startForeground(config.getNotificationId(), config.getNotification(this));
+            if (Build.VERSION.SDK_INT < 34) {
+                startForeground(config.getNotificationId(), config.getNotification(this));
+            } else {
+                startForeground(config.getNotificationId(), config.getNotification(this), FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+            }
             if (FileDownloadLog.NEED_LOG) {
                 FileDownloadLog.d(this, "run service foreground with config: %s", config);
             }
